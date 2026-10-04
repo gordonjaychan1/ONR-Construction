@@ -14,9 +14,14 @@ Sample website for ONR Construction, a licensed general and concrete contractor 
 - Swap in higher-resolution originals of the project photos if available.
 
 ## Changing the hero slideshow
-The photos that cycle at the top of the page are the `<img>` tags inside `<div class="slides">`
-in `index.html`. Add or remove one to change the rotation; the first one loads eagerly.
-Timing is `HOLD` in `script.js` (5.5s) and the matching transition on `.slides-bar i` in `style.css`.
+Both hero photos cycle. Each `<div class="slides">` in `index.html` holds its own `<img>` set —
+add or remove one to change that frame's rotation; the first loads eagerly.
+`data-hold` is the time per photo and `data-offset` staggers the second frame so the two never
+change at the same moment. If you change `data-hold`, match the transition on
+`.slides-bar i` in `style.css`.
+
+To go back to a single hero photo, delete the `<figure class="hero-shot hero-shot-b">` block and
+widen `.hero-shot-a` in `style.css`. No JS change needed.
 
 ## Adding a project photo
 Drop the jpg into `images/work/`, copy one of the `<button class="proj">` blocks in the Projects section,

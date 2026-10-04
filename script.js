@@ -22,66 +22,74 @@ $$('a', mobileMenu).forEach(a => a.addEventListener('click', () => setMenu(false
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && !mobileMenu.hidden) setMenu(false); });
 matchMedia('(min-width: 1000px)').addEventListener('change', e => { if (e.matches) setMenu(false); });
 
-/* ── Hero slideshow ──
-   Cycles the big hero photo. Pauses when off screen, when the tab is hidden,
-   and when the viewer hits the pause button. Add/remove <img> tags in the HTML
-   to change the rotation. */
-const slidesWrap = $('#slides');
-if (slidesWrap) {
-  const slides = $$('img', slidesWrap);
+/* ── Hero slideshows ──
+   Every .slides block cycles its own <img> set. data-hold sets the time per photo
+   and data-offset staggers a block so the two frames never change at the same moment.
+   One pause button controls all of them. They stop when off screen, when the tab is
+   hidden, and under prefers-reduced-motion. */
+const slideBlocks = $$('.slides');
+if (slideBlocks.length) {
   const bar = $('#slidesBar');
   const toggle = $('#slidesToggle');
-  const HOLD = 5500;
-  let current = 0;
-  let timer = null;
-  let paused = reduceMotion || slides.length < 2;
+  let paused = reduceMotion;
   let onScreen = true;
 
-  function paint() {
-    slides.forEach((img, i) => img.classList.toggle('is-on', i === current));
-  }
-  function runBar() {
-    if (!bar) return;
-    bar.classList.remove('is-running');
-    bar.offsetWidth;            // restart the transition
-    if (!paused) bar.classList.add('is-running');
-  }
-  function advance() {
-    current = (current + 1) % slides.length;
-    paint();
-    runBar();
-  }
-  function play() {
-    stop();
-    if (paused || !onScreen) return;
-    runBar();
-    timer = setInterval(advance, HOLD);
-  }
-  function stop() {
-    clearInterval(timer);
-    timer = null;
-    if (bar) bar.classList.remove('is-running');
-  }
+  const shows = slideBlocks.map(wrap => {
+    const imgs = $$('img', wrap);
+    const hold = Number(wrap.dataset.hold) || 6000;
+    const offset = Number(wrap.dataset.offset) || 0;
+    const lead = wrap.id === 'slides';          // the frame the progress bar tracks
+    let current = 0, tick = null, kickoff = null;
+
+    const advance = () => {
+      current = (current + 1) % imgs.length;
+      imgs.forEach((img, i) => img.classList.toggle('is-on', i === current));
+      if (lead) runBar();
+    };
+    const runBar = () => {
+      if (!bar) return;
+      bar.classList.remove('is-running');
+      void bar.offsetWidth;                      // restart the transition
+      if (!paused && onScreen) bar.classList.add('is-running');
+    };
+    return {
+      lead,
+      start() {
+        this.stop();
+        if (paused || !onScreen || imgs.length < 2) return;
+        if (lead) runBar();
+        kickoff = setTimeout(() => { advance(); tick = setInterval(advance, hold); }, offset || hold);
+      },
+      stop() {
+        clearTimeout(kickoff); clearInterval(tick);
+        kickoff = tick = null;
+        if (lead && bar) bar.classList.remove('is-running');
+      }
+    };
+  });
+
+  const playAll = () => shows.forEach(s => s.start());
+  const stopAll = () => shows.forEach(s => s.stop());
 
   toggle?.addEventListener('click', () => {
     paused = !paused;
     toggle.classList.toggle('is-paused', paused);
     toggle.setAttribute('aria-label', paused ? 'Play slideshow' : 'Pause slideshow');
-    paused ? stop() : play();
+    paused ? stopAll() : playAll();
   });
 
   new IntersectionObserver(([entry]) => {
     onScreen = entry.isIntersecting;
-    onScreen ? play() : stop();
-  }, { threshold: 0.2 }).observe(slidesWrap);
+    onScreen ? playAll() : stopAll();
+  }, { threshold: 0.2 }).observe(slideBlocks[0]);
 
-  document.addEventListener('visibilitychange', () => (document.hidden ? stop() : play()));
+  document.addEventListener('visibilitychange', () => (document.hidden ? stopAll() : playAll()));
 
   if (paused && toggle) {
     toggle.classList.add('is-paused');
     toggle.setAttribute('aria-label', 'Play slideshow');
   }
-  play();
+  playAll();
 }
 
 /* ── Scroll reveal ── */

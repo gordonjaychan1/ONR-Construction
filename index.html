@@ -104,7 +104,7 @@
     <div class="hero-art hero-anim">
       <!-- Slideshow: add or remove an <img> to change the rotation. First one loads eagerly. -->
       <figure class="hero-shot hero-shot-a">
-        <div class="slides" id="slides">
+        <div class="slides" id="slides" data-hold="6000">
           <img class="is-on" src="images/work/slab-rebar.jpg" alt="" loading="eager" fetchpriority="high">
           <img src="images/work/foundation-addition.jpg" alt="" loading="lazy">
           <img src="images/work/excavation.jpg" alt="" loading="lazy">
@@ -118,7 +118,12 @@
         </button>
       </figure>
       <figure class="hero-shot hero-shot-b">
-        <img src="images/work/walkway.jpg" alt="" loading="eager">
+        <div class="slides" data-hold="6000" data-offset="3000">
+          <img class="is-on" src="images/work/walkway.jpg" alt="" loading="eager">
+          <img src="images/work/bath-remodel.jpg" alt="" loading="lazy">
+          <img src="images/work/demolition.jpg" alt="" loading="lazy">
+          <img src="images/work/drainage.jpg" alt="" loading="lazy">
+        </div>
       </figure>
       <span class="hero-badge">
         <strong>Licensed</strong>
