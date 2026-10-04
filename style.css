@@ -272,7 +272,7 @@ body.menu-open { overflow: hidden; }
   background: rgba(255,255,255,.18);
 }
 .slides-bar i { display: block; height: 100%; width: 0; background: var(--orange); }
-.slides-bar i.is-running { transition: width 6s linear; width: 100%; }
+.slides-bar i.is-running { transition-property: width; transition-timing-function: linear; width: 100%; }
 
 .slides-toggle {
   position: absolute; left: 12px; bottom: 14px; z-index: 3;

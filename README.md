@@ -17,8 +17,11 @@ Sample website for ONR Construction, a licensed general and concrete contractor 
 Both hero photos cycle. Each `<div class="slides">` in `index.html` holds its own `<img>` set —
 add or remove one to change that frame's rotation; the first loads eagerly.
 `data-hold` is the time per photo and `data-offset` staggers the second frame so the two never
-change at the same moment. If you change `data-hold`, match the transition on
-`.slides-bar i` in `style.css`.
+change at the same moment. Each frame's orange progress bar is timed from those values in
+`script.js`, so no CSS change is needed when you retime them.
+
+To drop the progress bars, delete the two `<span class="slides-bar">` elements in `index.html`.
+The slideshows and the pause button keep working without them.
 
 To go back to a single hero photo, delete the `<figure class="hero-shot hero-shot-b">` block and
 widen `.hero-shot-a` in `style.css`. No JS change needed.

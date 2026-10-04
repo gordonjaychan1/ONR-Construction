@@ -29,41 +29,41 @@ matchMedia('(min-width: 1000px)').addEventListener('change', e => { if (e.matche
    hidden, and under prefers-reduced-motion. */
 const slideBlocks = $$('.slides');
 if (slideBlocks.length) {
-  const bar = $('#slidesBar');
   const toggle = $('#slidesToggle');
   let paused = reduceMotion;
   let onScreen = true;
 
   const shows = slideBlocks.map(wrap => {
     const imgs = $$('img', wrap);
+    const bar = $('.slides-bar i', wrap.parentElement);
     const hold = Number(wrap.dataset.hold) || 6000;
     const offset = Number(wrap.dataset.offset) || 0;
-    const lead = wrap.id === 'slides';          // the frame the progress bar tracks
     let current = 0, tick = null, kickoff = null;
 
     const advance = () => {
       current = (current + 1) % imgs.length;
       imgs.forEach((img, i) => img.classList.toggle('is-on', i === current));
-      if (lead) runBar();
+      runBar(hold);
     };
-    const runBar = () => {
+    const runBar = ms => {
       if (!bar) return;
       bar.classList.remove('is-running');
+      bar.style.transitionDuration = `${ms}ms`;
       void bar.offsetWidth;                      // restart the transition
       if (!paused && onScreen) bar.classList.add('is-running');
     };
     return {
-      lead,
       start() {
         this.stop();
         if (paused || !onScreen || imgs.length < 2) return;
-        if (lead) runBar();
-        kickoff = setTimeout(() => { advance(); tick = setInterval(advance, hold); }, offset || hold);
+        const first = offset || hold;            // staggered frame waits less the first time
+        runBar(first);
+        kickoff = setTimeout(() => { advance(); tick = setInterval(advance, hold); }, first);
       },
       stop() {
         clearTimeout(kickoff); clearInterval(tick);
         kickoff = tick = null;
-        if (lead && bar) bar.classList.remove('is-running');
+        if (bar) bar.classList.remove('is-running');
       }
     };
   });
