@@ -22,6 +22,68 @@ $$('a', mobileMenu).forEach(a => a.addEventListener('click', () => setMenu(false
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && !mobileMenu.hidden) setMenu(false); });
 matchMedia('(min-width: 1000px)').addEventListener('change', e => { if (e.matches) setMenu(false); });
 
+/* ── Hero slideshow ──
+   Cycles the big hero photo. Pauses when off screen, when the tab is hidden,
+   and when the viewer hits the pause button. Add/remove <img> tags in the HTML
+   to change the rotation. */
+const slidesWrap = $('#slides');
+if (slidesWrap) {
+  const slides = $$('img', slidesWrap);
+  const bar = $('#slidesBar');
+  const toggle = $('#slidesToggle');
+  const HOLD = 5500;
+  let current = 0;
+  let timer = null;
+  let paused = reduceMotion || slides.length < 2;
+  let onScreen = true;
+
+  function paint() {
+    slides.forEach((img, i) => img.classList.toggle('is-on', i === current));
+  }
+  function runBar() {
+    if (!bar) return;
+    bar.classList.remove('is-running');
+    bar.offsetWidth;            // restart the transition
+    if (!paused) bar.classList.add('is-running');
+  }
+  function advance() {
+    current = (current + 1) % slides.length;
+    paint();
+    runBar();
+  }
+  function play() {
+    stop();
+    if (paused || !onScreen) return;
+    runBar();
+    timer = setInterval(advance, HOLD);
+  }
+  function stop() {
+    clearInterval(timer);
+    timer = null;
+    if (bar) bar.classList.remove('is-running');
+  }
+
+  toggle?.addEventListener('click', () => {
+    paused = !paused;
+    toggle.classList.toggle('is-paused', paused);
+    toggle.setAttribute('aria-label', paused ? 'Play slideshow' : 'Pause slideshow');
+    paused ? stop() : play();
+  });
+
+  new IntersectionObserver(([entry]) => {
+    onScreen = entry.isIntersecting;
+    onScreen ? play() : stop();
+  }, { threshold: 0.2 }).observe(slidesWrap);
+
+  document.addEventListener('visibilitychange', () => (document.hidden ? stop() : play()));
+
+  if (paused && toggle) {
+    toggle.classList.add('is-paused');
+    toggle.setAttribute('aria-label', 'Play slideshow');
+  }
+  play();
+}
+
 /* ── Scroll reveal ── */
 const revealer = new IntersectionObserver(entries => {
   entries.forEach(entry => {

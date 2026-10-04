@@ -17,7 +17,9 @@
 
 <a class="skip-link" href="#main">Skip to content</a>
 
-<!-- ═══════════ UTILITY BAR ═══════════ -->
+<!-- ═══════════ STICKY HEADER (utility bar + nav travel together) ═══════════ -->
+<div class="topbar" id="topbar">
+
 <div class="utility">
   <div class="wrap utility-inner">
     <span class="utility-lic">CSLB&nbsp;#1119077 &middot; B &amp; C-8 &middot; Bonded &amp; Insured</span>
@@ -59,6 +61,8 @@
   </div>
 </header>
 
+</div><!-- /.topbar -->
+
 <div class="mobile-menu" id="mobileMenu" hidden>
   <a href="#services">Services</a>
   <a href="#process">Process</a>
@@ -97,9 +101,21 @@
       </dl>
     </div>
 
-    <div class="hero-art hero-anim" aria-hidden="true">
+    <div class="hero-art hero-anim">
+      <!-- Slideshow: add or remove an <img> to change the rotation. First one loads eagerly. -->
       <figure class="hero-shot hero-shot-a">
-        <img src="images/work/slab-rebar.jpg" alt="" loading="eager" fetchpriority="high">
+        <div class="slides" id="slides">
+          <img class="is-on" src="images/work/slab-rebar.jpg" alt="" loading="eager" fetchpriority="high">
+          <img src="images/work/foundation-addition.jpg" alt="" loading="lazy">
+          <img src="images/work/excavation.jpg" alt="" loading="lazy">
+          <img src="images/work/footings-forms.jpg" alt="" loading="lazy">
+          <img src="images/work/pool-shell.jpg" alt="" loading="lazy">
+        </div>
+        <span class="slides-bar" aria-hidden="true"><i id="slidesBar"></i></span>
+        <button class="slides-toggle" id="slidesToggle" aria-label="Pause slideshow">
+          <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+          <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5l12 7-12 7z"/></svg>
+        </button>
       </figure>
       <figure class="hero-shot hero-shot-b">
         <img src="images/work/walkway.jpg" alt="" loading="eager">
