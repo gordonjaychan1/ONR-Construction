@@ -6,11 +6,17 @@ Sample website for ONR Construction, a licensed general and concrete contractor 
 - `style.css`: design (brand colors are at the top; orange is sampled from the ONR logo)
 - `script.js`: menu, hero slideshow, services accordion, project filters and photo viewer, and the estimate form (sent via FormSubmit)
 - `images/work/`: project photos from @onr.construction
+- `images/brand/logo.png`: the official logo as supplied (orange mark, black lettering)
+- `images/brand/logo-white.png`: same file with the black lettering recoloured white, for the
+  dark header and footer. Regenerate it if the official logo changes, or replace it with an
+  official reversed version if ONR has one.
 
 ## Before going live
 - Set `FORM_EMAIL` in `script.js` to the inbox that should receive estimate requests (currently a placeholder).
 - Confirm hours, service-area cities, and the email address shown on the page.
 - Confirm the two review excerpts and add reviewer first names if wanted.
+- Ask ONR for a vector logo (SVG/AI/EPS) if they have one; the current PNG is 865px wide,
+  which is fine at the sizes used here but will not scale further.
 - Swap in higher-resolution originals of the project photos if available.
 
 ## Changing the hero slideshow
