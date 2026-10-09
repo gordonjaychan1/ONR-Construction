@@ -12,8 +12,9 @@ Sample website for ONR Construction, a licensed general and concrete contractor 
   official reversed version if ONR has one.
 
 ## Before going live
-- Set `FORM_EMAIL` in `script.js` to the inbox that should receive estimate requests (currently a placeholder).
-- Confirm hours, service-area cities, and the email address shown on the page.
+- Activate the estimate form: submit one test request, then click "Activate" in the email FormSubmit
+  sends to info@onrconstruction.com (confirmed by ONR as their business inbox). Check spam if it does not arrive.
+- Confirm service-area cities.
 - Confirm the two review excerpts and add reviewer first names if wanted.
 - Ask ONR for a vector logo (SVG/AI/EPS) if they have one; the current PNG is 865px wide,
   which is fine at the sizes used here but will not scale further.

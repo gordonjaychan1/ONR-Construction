@@ -210,8 +210,9 @@ new IntersectionObserver(([entry]) => {
 }, { threshold: 0.15 }).observe($('#contact'));
 
 /* ── Estimate form (FormSubmit) ──
-   Replace FORM_EMAIL with the inbox that should receive requests.
-   The first submission sends a one-time activation email to that address. */
+   FORM_EMAIL is ONR's confirmed business inbox. Nothing is delivered until that
+   inbox clicks "Activate" in the one-time email FormSubmit sends after the first
+   submission. */
 const FORM_EMAIL = 'info@onrconstruction.com';
 const form = $('#contactForm');
 const formButton = $('#formButton');
