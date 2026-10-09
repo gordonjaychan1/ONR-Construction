@@ -101,11 +101,18 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .btn-block { width: 100%; }
 
 /* ── Utility bar ──────────────────────── */
-.utility { background: var(--orange); color: var(--ink); font-size: 13px; font-weight: 600; }
+/* Kept dark on purpose: Safari tints its own toolbar to match the colour at the
+   top of the page, so an orange strip here turns the whole browser chrome orange. */
+.utility {
+  background: #08090A; color: rgba(255,255,255,.7);
+  border-bottom: 1px solid var(--line-dark);
+  font-size: 13px; font-weight: 500;
+}
 .utility-inner { display: flex; align-items: center; gap: 14px; min-height: 36px; }
-.utility-sep { width: 1px; height: 14px; background: rgba(14,15,17,.3); }
-.utility-ig { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
-.utility-ig:hover span { text-decoration: underline; }
+.utility-lic { color: rgba(255,255,255,.85); }
+.utility-sep { width: 1px; height: 14px; background: rgba(255,255,255,.18); }
+.utility-ig { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; transition: color .2s; }
+.utility-ig:hover { color: var(--orange-hi); }
 .utility-ig svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; }
 .utility-ig svg circle:last-child { fill: currentColor; stroke: none; }
 @media (max-width: 760px) {
