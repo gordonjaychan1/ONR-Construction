@@ -254,6 +254,9 @@ form.addEventListener('submit', async e => {
     formStatus.textContent = "✓ Request sent! We'll be in touch within one business day.";
     form.reset();
   } catch (err) {
+    // Customers see the generic fallback; the real reason (e.g. FormSubmit's
+    // "This form needs Activation") goes to the console for whoever is debugging.
+    console.warn('Estimate form not sent:', err.message);
     formStatus.className = 'form-status err';
     formStatus.innerHTML = 'Sorry, that didn\'t go through. Please call or text <a href="tel:+12097656794">(209) 765-6794</a>.';
   } finally {
