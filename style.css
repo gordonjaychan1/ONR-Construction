@@ -238,6 +238,17 @@ body.menu-open { overflow: hidden; }
 .hero-sub { margin: 26px 0 0; max-width: 48ch; font-size: clamp(17px, 1.6vw, 20px); color: rgba(255,255,255,.72); }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 34px; }
 
+/* Google + Instagram icons under the hero buttons */
+.hero-social { display: flex; gap: 10px; margin-top: 18px; }
+.hero-social a {
+  width: 44px; height: 44px; display: grid; place-items: center;
+  border: 1px solid rgba(255,255,255,.22); border-radius: 50%; color: var(--white);
+  transition: background .2s, border-color .2s, color .2s;
+}
+.hero-social a:hover, .hero-social a:focus-visible { background: var(--orange); border-color: var(--orange); color: var(--ink); }
+.hero-social svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; }
+.hero-social svg .fill { fill: currentColor; stroke: none; }
+
 .hero-stats {
   display: grid; grid-template-columns: repeat(3, auto); justify-content: start; gap: 0;
   margin: 48px 0 0; padding: 0;
@@ -312,6 +323,7 @@ body.menu-open { overflow: hidden; }
 .hero-copy .hero-anim:nth-child(3) { animation-delay: .16s; }
 .hero-copy .hero-anim:nth-child(4) { animation-delay: .24s; }
 .hero-copy .hero-anim:nth-child(5) { animation-delay: .32s; }
+.hero-copy .hero-anim:nth-child(6) { animation-delay: .4s; }
 .hero-art.hero-anim { animation-delay: .2s; }
 
 /* ── Credentials ──────────────────────── */
