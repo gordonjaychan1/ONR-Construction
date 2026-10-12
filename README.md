@@ -2,7 +2,13 @@
 
 Website for ONR Construction, a licensed general and concrete contractor in Ceres, CA (CSLB #1119077).
 
-Live: https://onrconstruction.com (served by GitHub Pages; the `CNAME` file sets the domain).
+Live: https://www.onrconstruction.com (served by GitHub Pages; the `CNAME` file sets the domain).
+The bare domain redirects to www.
+
+**Keep www as the main address.** The old Wix site redirected onrconstruction.com → www, and
+browsers that visited it remember that redirect. With the bare domain as the main address, GitHub
+redirects the other way and those visitors get ERR_TOO_MANY_REDIRECTS. With www as main, both
+directions agree and nobody loops.
 
 ## Domain and DNS
 onrconstruction.com is registered at GoDaddy, but its DNS is hosted by **Wix** (nameservers
@@ -34,7 +40,7 @@ record above at the new DNS host, or email will stop working.
   official reversed version if ONR has one.
 
 ## Before going live
-- Activate the estimate form: submit one test request from https://onrconstruction.com, then click "Activate" in the email FormSubmit
+- Activate the estimate form: submit one test request from https://www.onrconstruction.com, then click "Activate" in the email FormSubmit
   sends to info@onrconstruction.com (confirmed by ONR as their business inbox). Check spam if it does not arrive.
 - Confirm service-area cities.
 - Confirm the two review excerpts and add reviewer first names if wanted.
