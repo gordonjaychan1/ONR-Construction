@@ -17,6 +17,10 @@ Website records (point at GitHub Pages):
 - TXT: `v=spf1 include:spf.protection.outlook.com -all`
 - `autodiscover` CNAME: autodiscover.outlook.com
 
+**Do not delete** — GitHub domain verification (stops anyone else claiming the domain on GitHub Pages;
+verified on the gordonjaychan1 account 2026-10-12):
+- TXT `_github-pages-challenge-gordonjaychan1`: the value shown in GitHub → Settings → Pages
+
 Do not move the nameservers off Wix or cancel ONR's Wix account without first recreating every
 record above at the new DNS host, or email will stop working.
 
