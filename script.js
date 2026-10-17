@@ -128,12 +128,14 @@ function openService(item) {
   if (svcImg.getAttribute('src') === src) return;
   if (reduceMotion) {
     svcImg.src = src;
+    svcImg.style.objectPosition = item.dataset.pos || '';
     svcLabel.textContent = item.dataset.service;
     return;
   }
   svcImg.classList.add('is-swapping');
   setTimeout(() => {
     svcImg.src = src;
+    svcImg.style.objectPosition = item.dataset.pos || '';
     svcLabel.textContent = item.dataset.service;
     svcImg.onload = () => svcImg.classList.remove('is-swapping');
     if (svcImg.complete) svcImg.classList.remove('is-swapping');

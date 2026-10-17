@@ -33,7 +33,9 @@ record above at the new DNS host, or email will stop working.
 - `index.html`: page content
 - `style.css`: design (brand colors are at the top; orange is sampled from the ONR logo)
 - `script.js`: menu, hero slideshow, services accordion, project filters and photo viewer, and the estimate form (sent via FormSubmit)
-- `images/work/`: project photos from @onr.construction
+- `images/work/`: project photos. Most are Victor's originals (Oct 2026), saved as `NAME.jpg` (≤1800px,
+  photo viewer) + `NAME-sm.jpg` (≤900px, page). `bath-remodel`, `demolition` and `excavation` are older
+  640px Instagram copies Victor chose to keep.
 - `images/brand/logo.png`: the official logo as supplied (orange mark, black lettering)
 - `images/brand/logo-white.png`: same file with the black lettering recoloured white, for the
   dark header and footer. Regenerate it if the official logo changes, or replace it with an
@@ -43,10 +45,9 @@ record above at the new DNS host, or email will stop working.
 - Activate the estimate form: submit one test request from https://www.onrconstruction.com, then click "Activate" in the email FormSubmit
   sends to info@onrconstruction.com (confirmed by ONR as their business inbox). Check spam if it does not arrive.
 - Confirm service-area cities.
-- Confirm the two review excerpts and add reviewer first names if wanted.
+- Reviews are Google only (Victor asked for Yelp removed). Names are left off on purpose.
 - Ask ONR for a vector logo (SVG/AI/EPS) if they have one; the current PNG is 865px wide,
   which is fine at the sizes used here but will not scale further.
-- Swap in higher-resolution originals of the project photos if available.
 
 ## Changing the hero slideshow
 Both hero photos cycle. Each `<div class="slides">` in `index.html` holds its own `<img>` set —

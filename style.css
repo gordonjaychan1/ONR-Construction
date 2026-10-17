@@ -508,7 +508,7 @@ body.menu-open { overflow: hidden; }
 .reviews { background: var(--ink-2); color: var(--white); padding: clamp(72px, 10vw, 130px) 0; }
 .reviews .section-lede { color: var(--muted-light); }
 .quotes { display: grid; gap: 16px; grid-template-columns: 1fr; }
-@media (min-width: 900px) { .quotes { grid-template-columns: 1fr 1fr .8fr; } }
+@media (min-width: 760px) { .quotes { grid-template-columns: repeat(3, 1fr); } }
 .quote {
   margin: 0; padding: 32px; border-radius: var(--radius-lg);
   background: var(--ink-3); border: 1px solid var(--line-dark);
@@ -519,9 +519,14 @@ body.menu-open { overflow: hidden; }
 .quote blockquote p { margin: 0; font-size: clamp(20px, 2.2vw, 24px); line-height: 1.35; font-weight: 500; }
 .quote figcaption { font-family: var(--display); font-weight: 700; font-size: 17px; letter-spacing: .08em; text-transform: uppercase; padding-top: 18px; border-top: 1px solid var(--line-dark); }
 .quote figcaption span { display: block; margin-top: 2px; font-family: var(--body); font-weight: 500; font-size: 14px; letter-spacing: 0; text-transform: none; color: var(--muted-light); }
-.quote-cta { background: var(--orange); border-color: var(--orange); color: var(--ink); justify-content: center; align-items: flex-start; }
-.quote-cta-big { margin: 0; font-family: var(--display); font-weight: 700; font-size: 110px; line-height: .85; }
-.quote-cta-sub { margin: 10px 0 24px; font-weight: 600; }
+/* rating card runs full width under the three quotes */
+.quote-cta {
+  grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 14px 28px;
+  background: var(--orange); border-color: var(--orange); color: var(--ink);
+}
+.quote-cta-big { margin: 0; font-family: var(--display); font-weight: 700; font-size: 88px; line-height: .85; }
+.quote-cta-sub { margin: 0; font-weight: 600; font-size: 18px; }
+@media (min-width: 760px) { .quote-cta .btn { margin-left: auto; } }
 .quote-cta .btn-ghost { border-color: rgba(14,15,17,.4); color: var(--ink); }
 .quote-cta .btn-ghost:hover { border-color: var(--ink); background: rgba(14,15,17,.08); }
 
