@@ -530,6 +530,31 @@ body.menu-open { overflow: hidden; }
 .quote-cta .btn-ghost { border-color: rgba(14,15,17,.4); color: var(--ink); }
 .quote-cta .btn-ghost:hover { border-color: var(--ink); background: rgba(14,15,17,.08); }
 
+/* ── Pricing ──────────────────────────── */
+.pricing { background: var(--concrete); padding: clamp(72px, 10vw, 120px) 0; }
+.price-cards { display: grid; gap: 16px; grid-template-columns: 1fr; }
+@media (min-width: 860px) { .price-cards { grid-template-columns: 1.4fr 1fr; } }
+.price-card {
+  display: flex; flex-direction: column; padding: clamp(26px, 4vw, 40px);
+  background: var(--paper); border-radius: var(--radius-lg); border-top: 6px solid var(--ink);
+}
+.price-card-lead { border-top-color: var(--orange); }
+.price-tag {
+  margin: 0 0 12px; font-family: var(--display); font-weight: 700; font-size: 15px;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--orange-deep);
+}
+.price-card h3 {
+  margin: 0; font-family: var(--display); font-weight: 700; text-transform: uppercase;
+  font-size: clamp(28px, 3.2vw, 38px); line-height: 1.02;
+}
+.price-fine { margin: 18px 0 24px; flex: 1; font-size: 15px; line-height: 1.55; color: var(--muted); max-width: 60ch; }
+.price-link {
+  align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; padding-bottom: 2px;
+  font-family: var(--display); font-weight: 700; font-size: 17px; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--text); text-decoration: none; border-bottom: 2px solid var(--orange);
+}
+.price-link:hover { color: var(--orange-deep); }
+
 /* ── Service area band ────────────────── */
 .band { padding: clamp(72px, 10vw, 120px) 0; background: var(--paper); }
 .band-inner {
