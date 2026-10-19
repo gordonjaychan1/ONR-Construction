@@ -534,7 +534,7 @@
 
       <div class="field-row">
         <div class="field">
-          <input id="f-size" name="Approx. size" type="text" placeholder=" ">
+          <input id="f-size" name="Size" type="text" placeholder=" ">
           <label for="f-size">Approx. size <span class="opt">e.g. 20 &times; 30 ft</span></label>
         </div>
         <div class="field field-select">
@@ -554,7 +554,8 @@
         <label for="f-message">Tell us about the job</label>
       </div>
 
-      <!-- Photos are shrunk in the browser before upload (FormSubmit allows 10MB per request). -->
+      <!-- Photos are shrunk in the browser, then sent with a standard form POST (FormSubmit's AJAX
+           endpoint drops files). See postWithPhotos() in script.js. -->
       <div class="upload">
         <input id="f-photos" class="upload-input" type="file" accept="image/*" multiple>
         <label class="upload-drop" for="f-photos">

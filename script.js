@@ -303,6 +303,69 @@ photoInput.addEventListener('change', async () => {
   }
 });
 
+/* FormSubmit's AJAX endpoint silently drops file attachments (tested 2026-10-19), so a
+   request with photos goes as a normal multipart POST into a hidden iframe instead.
+   FormSubmit then redirects that iframe to thanks.html via _next; seeing our own page
+   load there is the delivery confirmation. Anything else (its activation or error page,
+   which we can't read cross-origin) counts as not delivered. */
+const supportsFileTransfer = (() => { try { return !!new DataTransfer(); } catch { return false; } })();
+
+function postWithPhotos(fields, files) {
+  return new Promise((resolve, reject) => {
+    const target = `fs-${Date.now()}`;
+    const frame = document.createElement('iframe');
+    frame.name = target;
+    frame.hidden = true;
+    frame.tabIndex = -1;
+    frame.setAttribute('aria-hidden', 'true');
+
+    const post = document.createElement('form');
+    post.method = 'POST';
+    post.action = `https://formsubmit.co/${FORM_EMAIL}`;
+    post.enctype = 'multipart/form-data';
+    post.target = target;
+    post.hidden = true;
+    const add = (name, value) => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = name;
+      input.value = value;
+      post.append(input);
+    };
+    for (const [name, value] of fields) add(name, value);
+    add('_captcha', 'false');                                    // no CAPTCHA page inside a hidden frame
+    add('_next', new URL('thanks.html', location.href).href);
+    files.forEach((file, i) => {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.name = `photo${i + 1}`;
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      input.files = dt.files;
+      post.append(input);
+    });
+
+    let failTimer;
+    const finish = ok => {
+      clearTimeout(giveUp);
+      clearTimeout(failTimer);
+      setTimeout(() => { frame.remove(); post.remove(); }, 0);
+      ok ? resolve() : reject(new Error('FormSubmit did not redirect to thanks.html'));
+    };
+    const giveUp = setTimeout(() => finish(false), 60000);
+    frame.addEventListener('load', () => {
+      let href = null;
+      try { href = frame.contentWindow.location.href; } catch { /* cross-origin: FormSubmit's own page */ }
+      if (href === 'about:blank') return;                         // the empty frame's first load
+      if (href && /\/thanks\.html(?:$|[?#])/.test(href)) return finish(true);
+      clearTimeout(failTimer);                                    // give an in-between page a moment to redirect
+      failTimer = setTimeout(() => finish(false), 8000);
+    });
+    document.body.append(frame, post);
+    post.submit();
+  });
+}
+
 form.addEventListener('submit', async e => {
   e.preventDefault();
   let firstInvalid = null;
@@ -333,25 +396,30 @@ form.addEventListener('submit', async e => {
   for (const [key, value] of [...data]) if (value === '' && key !== '_honey') data.delete(key);  // no blank rows in the email
   data.append('_subject', `New estimate request from ${data.get('Name')}`);
   data.append('_template', 'table');
-  photos.forEach((p, i) => {
-    const filename = p.blob.type === 'image/jpeg' ? `photo-${i + 1}.jpg` : p.name;
-    data.append(`attachment${i + 1}`, p.blob, filename);
-  });
+  const files = supportsFileTransfer
+    ? photos.map((p, i) => new File([p.blob], p.blob.type === 'image/jpeg' ? `photo-${i + 1}.jpg` : p.name, { type: p.blob.type || 'image/jpeg' }))
+    : [];
 
   formButton.disabled = true;
   formButton.textContent = photos.length ? 'Uploading photos…' : 'Sending…';
   formStatus.className = 'form-status';
   formStatus.textContent = '';
   try {
-    const res = await fetch(`https://formsubmit.co/ajax/${FORM_EMAIL}`, {
-      method: 'POST',
-      headers: { Accept: 'application/json' },
-      body: data
-    });
-    const result = await res.json();
-    if (!res.ok || String(result.success) !== 'true') throw new Error(result.message);
+    if (files.length) {
+      await postWithPhotos(data, files);
+    } else {
+      const res = await fetch(`https://formsubmit.co/ajax/${FORM_EMAIL}`, {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: data
+      });
+      const result = await res.json();
+      if (!res.ok || String(result.success) !== 'true') throw new Error(result.message);
+    }
     formStatus.className = 'form-status ok';
-    formStatus.textContent = "✓ Request sent! We'll be in touch within one business day.";
+    formStatus.textContent = photos.length && !files.length
+      ? "✓ Request sent! Your browser couldn't attach the photos, so please text them to (209) 765-6794."
+      : "✓ Request sent! We'll be in touch within one business day.";
     form.reset();
     clearPhotos();
   } catch (err) {

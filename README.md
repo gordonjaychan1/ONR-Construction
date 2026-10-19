@@ -33,6 +33,9 @@ record above at the new DNS host, or email will stop working.
 - `index.html`: page content
 - `style.css`: design (brand colors are at the top; orange is sampled from the ONR logo)
 - `script.js`: menu, hero slideshow, services accordion, project filters and photo viewer, and the estimate form (sent via FormSubmit)
+- `thanks.html`: where FormSubmit sends a request that had photos. Requests without photos use FormSubmit's
+  AJAX endpoint; requests with photos must use a normal multipart POST (the AJAX endpoint drops files), sent
+  into a hidden iframe. The iframe landing on `thanks.html` is how the page knows it was delivered.
 - `images/work/`: project photos. Most are Victor's originals (Oct 2026), saved as `NAME.jpg` (≤1800px,
   photo viewer) + `NAME-sm.jpg` (≤900px, page). `bath-remodel`, `demolition` and `excavation` are older
   640px Instagram copies Victor chose to keep.
