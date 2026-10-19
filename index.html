@@ -532,9 +532,37 @@
         <label><input type="radio" name="Service" value="Other"><span>Other</span></label>
       </fieldset>
 
+      <div class="field-row">
+        <div class="field">
+          <input id="f-size" name="Approx. size" type="text" placeholder=" ">
+          <label for="f-size">Approx. size <span class="opt">e.g. 20 &times; 30 ft</span></label>
+        </div>
+        <div class="field field-select">
+          <select id="f-timeline" name="Timeline">
+            <option value="">Flexible</option>
+            <option>As soon as possible</option>
+            <option>Within 1&ndash;3 months</option>
+            <option>3&ndash;6 months out</option>
+            <option>Just planning / getting prices</option>
+          </select>
+          <label for="f-timeline">Preferred timeline</label>
+        </div>
+      </div>
+
       <div class="field">
         <textarea id="f-message" name="Message" rows="4" placeholder=" "></textarea>
         <label for="f-message">Tell us about the job</label>
+      </div>
+
+      <!-- Photos are shrunk in the browser before upload (FormSubmit allows 10MB per request). -->
+      <div class="upload">
+        <input id="f-photos" class="upload-input" type="file" accept="image/*" multiple>
+        <label class="upload-drop" for="f-photos">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h3l2-3h6l2 3h3a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="4"/></svg>
+          <span><strong>Add photos</strong> <span class="opt">optional, up to 5</span><br>
+          <span class="upload-hint">Pictures of the area help us estimate faster.</span></span>
+        </label>
+        <ul class="upload-list" id="photoList"></ul>
       </div>
 
       <button type="submit" class="btn btn-orange btn-block" id="formButton">Send request <span class="btn-arrow" aria-hidden="true">&rarr;</span></button>

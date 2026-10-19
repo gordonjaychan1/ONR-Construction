@@ -221,6 +221,88 @@ const formButton = $('#formButton');
 const formStatus = $('#formStatus');
 const buttonHTML = formButton.innerHTML;
 
+/* ── Optional photos ──
+   Each photo is redrawn at no more than 1600px as a JPEG before upload. That keeps a
+   request well under FormSubmit's 10MB limit, and re-encoding drops the photo's
+   location metadata. If the browser can't read a format (e.g. HEIC in desktop Chrome),
+   the original file is sent as long as it fits. */
+const MAX_PHOTOS = 5;
+const MAX_UPLOAD_BYTES = 9.5 * 1024 * 1024;
+const photoInput = $('#f-photos');
+const photoList = $('#photoList');
+const uploadBox = $('.upload', form);
+let photos = [];   // { blob, name, url } — blob is null while the photo is being shrunk
+
+function loadImage(file) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('unreadable image')); };
+    img.src = url;
+  });
+}
+
+async function shrinkPhoto(file, max = 1600, quality = 0.82) {
+  const img = await loadImage(file);   // <img> decoding honours the photo's rotation
+  const scale = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.round(img.naturalWidth * scale);
+  canvas.height = Math.round(img.naturalHeight * scale);
+  canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+  return new Promise((resolve, reject) =>
+    canvas.toBlob(b => (b ? resolve(b) : reject(new Error('encode failed'))), 'image/jpeg', quality));
+}
+
+function renderPhotos() {
+  photoList.innerHTML = '';
+  photos.forEach((p, i) => {
+    const li = document.createElement('li');
+    if (!p.blob) li.className = 'is-busy';
+    if (p.url) {
+      const img = new Image();
+      img.src = p.url;
+      img.alt = `Photo ${i + 1}`;
+      li.append(img);
+    }
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.textContent = '×';
+    remove.setAttribute('aria-label', `Remove photo ${i + 1}`);
+    remove.addEventListener('click', () => {
+      if (p.url) URL.revokeObjectURL(p.url);
+      photos = photos.filter(x => x !== p);
+      renderPhotos();
+    });
+    li.append(remove);
+    photoList.append(li);
+  });
+  uploadBox.classList.toggle('is-full', photos.length >= MAX_PHOTOS);
+}
+
+function clearPhotos() {
+  photos.forEach(p => p.url && URL.revokeObjectURL(p.url));
+  photos = [];
+  renderPhotos();
+}
+
+photoInput.addEventListener('change', async () => {
+  const picked = [...photoInput.files].filter(f => f.type.startsWith('image/') || /\.(heic|heif)$/i.test(f.name));
+  photoInput.value = '';                       // lets the same photo be picked again after removing it
+  const room = MAX_PHOTOS - photos.length;
+  formStatus.className = 'form-status';
+  formStatus.textContent = picked.length > room ? `Up to ${MAX_PHOTOS} photos — the first ${room} were added.` : '';
+  for (const file of picked.slice(0, room)) {
+    const item = { blob: null, name: file.name, url: null };
+    photos.push(item);
+    renderPhotos();
+    try { item.blob = await shrinkPhoto(file); }
+    catch { item.blob = file; }
+    item.url = URL.createObjectURL(item.blob);
+    renderPhotos();
+  }
+});
+
 form.addEventListener('submit', async e => {
   e.preventDefault();
   let firstInvalid = null;
@@ -235,13 +317,29 @@ form.addEventListener('submit', async e => {
     firstInvalid.focus();
     return;
   }
+  if (photos.some(p => !p.blob)) {
+    formStatus.className = 'form-status';
+    formStatus.textContent = 'Still preparing your photos — one moment, then send again.';
+    return;
+  }
+  const photoBytes = photos.reduce((sum, p) => sum + p.blob.size, 0);
+  if (photoBytes > MAX_UPLOAD_BYTES) {
+    formStatus.className = 'form-status err';
+    formStatus.textContent = 'Those photos are too large to send together. Remove one or two and try again.';
+    return;
+  }
 
   const data = new FormData(form);
+  for (const [key, value] of [...data]) if (value === '' && key !== '_honey') data.delete(key);  // no blank rows in the email
   data.append('_subject', `New estimate request from ${data.get('Name')}`);
   data.append('_template', 'table');
+  photos.forEach((p, i) => {
+    const filename = p.blob.type === 'image/jpeg' ? `photo-${i + 1}.jpg` : p.name;
+    data.append(`attachment${i + 1}`, p.blob, filename);
+  });
 
   formButton.disabled = true;
-  formButton.textContent = 'Sending…';
+  formButton.textContent = photos.length ? 'Uploading photos…' : 'Sending…';
   formStatus.className = 'form-status';
   formStatus.textContent = '';
   try {
@@ -255,6 +353,7 @@ form.addEventListener('submit', async e => {
     formStatus.className = 'form-status ok';
     formStatus.textContent = "✓ Request sent! We'll be in touch within one business day.";
     form.reset();
+    clearPhotos();
   } catch (err) {
     // Customers see the generic fallback; the real reason (e.g. FormSubmit's
     // "This form needs Activation") goes to the console for whoever is debugging.
